@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <title>CSM3503</title>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="css/bootstrap.min.css">
+
+   <!-- Custom styles for this template -->
+   <link href="css/navbar-fixed-top.css" rel="stylesheet">
+</head>
+
+<body>
+   <!-- Fixed navbar -->
+   <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+         <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+               aria-expanded="false" aria-controls="navbar">
+               <span class="sr-only">Toggle navigation</span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">CSM3503</a>
+         </div>
+         <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+               <li class="active"><a href="#">Home</a></li>
+               <li><a href="#about">About</a></li>
+               <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                     aria-expanded="false">Dropdown <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                     <li><a href="#">Profile</a></li>
+                     <li><a href="#">Logout</a></li>
+                  </ul>
+               </li>
+            </ul>
+         </div><!--/.nav-collapse -->
+
+   </nav>
+   <h1>Staff Details</h1>
+   <div id="staff-details"></div>
+
+   <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const employeeNumber = urlParams.get('id');
+
+      fetch(`https://kerbau.odaje.biz/getstaffbyid.php?id=${employeeNumber}`)
+         .then(response => response.json())
+         .then(data => {
+            const staffDetails = document.getElementById('staff-details');
+
+            if (data[0] === '{"status":1}') {
+               const staff = JSON.parse(data[1]);
+               const {
+                  firstName,
+                  lastName,
+                  officeCode,
+                  email,
+                  extension,
+                  jobTitle,
+                  reportsTo
+               } = staff;
+
+               const detailsHTML = `
+                <p>Employee Number: ${employeeNumber}</p>
+                <p>Firstname: ${firstName} </p>
+                <p>Lastname: ${lastName}</p>
+                <p>Office Code: ${officeCode}</p>
+                <p>Email: ${email}</p>
+                <p>Extension: ${extension}</p>
+                <p>Job Title: ${jobTitle}</p>
+                <p>Reports To: ${reportsTo || 'None'}</p>
+              `;
+
+               staffDetails.innerHTML = detailsHTML;
+            } else {
+               staffDetails.textContent = 'No staff details found.';
+            }
+         })
+         .catch(error => console.error(error));
+   </script>
+
+   <nav class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container">
+
+         <div class="row">
+            <div class="col-md-12">
+               Front End Programming © 2023
+            </div>
+         </div>
+
+      </div>
+
+   </nav>
+
+
+   <script src="js/jquery-3.2.1.min.js"></script>
+   <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>
